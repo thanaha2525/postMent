@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const db = () => {
   mongoose
     .connect(
-      "mongodb+srv://thanaha:1234@cluster0-stino.mongodb.net/test?retryWrites=true&w=majority",
+      "mongodb+srv://chalunton:Tha0897451740@cluster0-stino.mongodb.net/test?retryWrites=true&w=majority",
       {
         useNewUrlParser: true,
         useCreateIndex: true,

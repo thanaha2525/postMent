@@ -2,12 +2,30 @@ const express = require("express");
 const app = express();
 const authRouter = require("./routes/auth");
 const homeRouter = require("./controllers/home-controller");
-const db = require("./db/connect");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
-app.use(db);
+app.use(bodyParser.json());
+/*const db = require("./db/connect");
+app.use(db);*/
+
+mongoose
+  .connect(
+    "mongodb+srv://chalunton:Tha0897451740@cluster0-stino.mongodb.net/test?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true
+    }
+  )
+  .then(() => {
+    console.log("Connected Database Success");
+  })
+  .catch(err => {
+    console.log(`Connected Database Fail ${err}`);
+  });
 app.use(authRouter);
 
-app.set(db);
 app.get("/", homeRouter);
 
 const PORT = process.env.port || 3003;
