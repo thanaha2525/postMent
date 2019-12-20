@@ -33,9 +33,10 @@ const postRegister = (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
-  const location = req.body.location;
-  const lastLogin = time;
-  const created = time;
+
+  const lat = req.body.lat;
+  const long = req.body.long;
+  const location = { lat, long };
 
   const userObj = {
     username: username,
