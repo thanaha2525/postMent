@@ -1,12 +1,23 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
+let ts = Date.now();
+
+let date_ob = new Date(ts);
+let date = date_ob.getDate();
+let month = date_ob.getMonth() + 1;
+let year = date_ob.getFullYear();
+
+const time = `${date}-${month}-${year}`;
 const createUser = async userObj => {
   const passwordhash = await bcrypt.hash(userObj.password, 10);
   const user = new User({
     username: userObj.username,
     email: userObj.email,
-    password: passwordhash
+    password: passwordhash,
+    location: userObj.location,
+    created: time,
+    lastLogin: time
   });
   const data = await user.save();
   return data;
@@ -22,20 +33,20 @@ const postRegister = (req, res, next) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
+  const location = req.body.location;
+  const lastLogin = time;
+  const created = time;
+
   const userObj = {
     username: username,
     email: email,
-    password: password
+    password: password,
+    location: location
   };
   createUser(userObj)
-    .then(() => {
+    .then(rs => {
       const success = "Register Success";
-      res.send({
-        status: success,
-        username: username,
-        email: email,
-        password: password
-      });
+      res.send(rs);
     })
     .catch(err => {
       const success = `Register fail ${err}`;
