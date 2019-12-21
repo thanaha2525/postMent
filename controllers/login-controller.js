@@ -3,9 +3,14 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const login = (req, res, next) => {
-  res.send("login Screen");
+  res.send({
+    data: {
+      pageName: "Login",
+      message: "Please Login",
+      loginStatus: false
+    }
+  });
 };
-
 module.exports = login;
 
 const getUserData = async dataObj => {
@@ -22,19 +27,58 @@ const getUserData = async dataObj => {
 
 const postLogin = (req, res, next) => {
   if (!req.body.username || !req.body.password) {
-    const status = { status: "cannotlogin", screen: "login" };
-    res.send(status);
+    res.send({
+      pageName: "Login",
+      message: "Plaese Enter Username and Password",
+      loginStatus: false
+    });
+    return;
   }
-  return;
+
+  const dataObj = {
+    username: req.body.username,
+    password: req.body.password
+  };
+
+  getUserData(dataObj)
+    .then(result => {
+      if (result.loginStatus == true) {
+        const token = jwt.sign(
+          {
+            id: result.id,
+            username: result.username,
+            loginStatus: true
+          },
+          "SECRETKEY",
+          { expiresIn: 60 * 1 }
+        );
+        res.setHeader("set-Cookie", "token=" + token);
+        res.send({
+          data: {
+            pageName: "home",
+            message: "",
+            class: "alert alert-primary",
+            username: result.username,
+            loginStatus: true
+          }
+        });
+      } else {
+        res.send({
+          data: {
+            pageName: "login",
+            message: "Username or Password Not Curect",
+            class: "alert alert-danger",
+            loginStatus: false
+          }
+        });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
-const dataObj = {
-  username: req.body.username,
-  password: req.body.password
-};
-
-const getUserData
-
+module.exports.postLogin = postLogin;
 
 const logout = (req, res, next) => {
   res.clearCookie("token");
