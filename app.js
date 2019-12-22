@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const authRouter = require("./routes/auth");
 const homeRouter = require("./controllers/home-controller");
+const postRouter = require("./routes/postMent");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
@@ -25,6 +26,7 @@ mongoose
     console.log(`Connected Database Fail ${err}`);
   });
 app.use(authRouter);
+app.use(postRouter);
 
 app.get("/", homeRouter);
 
